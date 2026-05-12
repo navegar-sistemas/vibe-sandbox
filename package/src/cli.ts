@@ -61,8 +61,12 @@ program
 program
   .command("up")
   .description("Build the sandbox images and drop into the Claude REPL.")
-  .action(async () => {
-    await up();
+  .option(
+    "-s, --shell",
+    "drop into an interactive bash shell instead of the Claude REPL (bootstrap still runs on first use)",
+  )
+  .action(async (opts: { shell?: boolean }) => {
+    await up({ shell: opts.shell });
   });
 
 program

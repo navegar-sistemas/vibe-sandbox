@@ -75,10 +75,25 @@ export async function composeBuild(vibeDir: string): Promise<void> {
   });
 }
 
-export async function composeRun(vibeDir: string): Promise<void> {
+export interface ComposeRunOptions {
+  // Extra environment passed into the container. Each pair becomes `--env K=V`
+  // on the `docker compose run` invocation. The entrypoint reads these to
+  // switch modes (e.g. `SANDBOX_VIBE_MODE=shell` selects bash instead of
+  // the Claude REPL after bootstrap).
+  env?: Record<string, string>;
+}
+
+export async function composeRun(
+  vibeDir: string,
+  options: ComposeRunOptions = {},
+): Promise<void> {
+  const envArgs: string[] = [];
+  for (const [key, value] of Object.entries(options.env ?? {})) {
+    envArgs.push("--env", `${key}=${value}`);
+  }
   await execa(
     "docker",
-    [...composeFlags(vibeDir), "run", "--rm", "sandbox"],
+    [...composeFlags(vibeDir), "run", "--rm", ...envArgs, "sandbox"],
     {
       stdio: "inherit",
     },

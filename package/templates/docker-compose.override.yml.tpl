@@ -46,9 +46,13 @@ ${mcpsBlock}
         fi
 
         if [ -t 0 ]; then
-          exec claude --dangerously-skip-permissions
+          if [ "$$SANDBOX_VIBE_MODE" = "shell" ]; then
+            exec bash -l
+          else
+            exec claude --dangerously-skip-permissions
+          fi
         else
-          echo "[sandbox] No interactive TTY; exiting after bootstrap. Use 'docker compose ... run --rm sandbox' in a terminal."
+          echo "[sandbox] No interactive TTY; exiting after bootstrap. Use 'sandbox-vibe up' (or 'sandbox-vibe up --shell') in a terminal."
         fi
     command: []
 

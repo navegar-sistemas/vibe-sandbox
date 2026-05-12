@@ -1,6 +1,6 @@
 {
   "name": "sandbox-vibe",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Plug-and-play Docker sandbox for Claude Code with idempotent plugin and MCP bootstrap and security limits enforced by default",
   "type": "module",
   "bin": {

@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+### Added
+
+- **`sandbox-vibe up --shell` (alias `-s`) drops into an interactive bash shell** inside the container instead of the Claude REPL. Bootstrap still runs on first use (marketplaces, plugins and MCPs installed once, `settings.json` written each run), so the environment is ready whether you want to invoke `claude` manually afterwards or just iterate on your project (`npm test`, `npm run dev`, etc.) without the agent in the way. Internally, the CLI sets `SANDBOX_VIBE_MODE=shell` on `docker compose run`; the entrypoint branches on that env var. Existing `.sandbox-vibe/` directories must regenerate to pick up the new entrypoint — either `sandbox-vibe init --force` or re-run `init` after deleting `.sandbox-vibe/`.
+
+### Changed
+
+- **`DEFAULT_RESOURCES` reduced to actual working-set sizing**: `cpus` 4 → 2, `memoryGB` 4 → 2, `pids` 256 → 128, `tmpfsMB` 512 → 256. The previous values were calibrated for the original multi-stack project (Flutter + .NET + PHP with 9 sibling repos in a single container) and were oversized for the common single-project case. Existing `.sandbox-vibe/config.json` files are unaffected — the change only applies to new `init` runs. Resources can still be customised by answering "no" to the "use default resources" prompt during the wizard, or by editing `config.json` directly.
+
 ### Fixed
 
 - **Duplicate MCP names no longer wedge the bootstrap container.** Before, the `init` wizard happily accepted the same MCP name twice (e.g. confirming the default `context7` on two consecutive iterations), and the rendered `docker-compose.override.yml` then emitted two `claude mcp add context7 ...` lines. The second call exits non-zero because that name is already registered; with `set -e -o pipefail` the entrypoint aborts before `touch ~/.claude/.bootstrap-<hash>`, leaving the volume in a half-initialised state from which subsequent `up` runs cannot recover without a manual `docker volume prune`. Three defences in depth land together: (1) `promptMcps` re-prompts when the typed name is already present in the in-progress list; (2) `validateConfig` rejects `mcps[]` with duplicate names (and now also `plugins[]` / `marketplaces[]` with duplicates), so an adulterated `config.json` cannot smuggle them past `up`; (3) `renderMcpsBlock` / `renderMarketplacesBlock` / `renderPluginLoopBlock` deduplicate defensively by identity before emitting a single line per entry.

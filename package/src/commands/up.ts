@@ -6,7 +6,11 @@ import {
 import { log } from "../log.js";
 import { findSandboxVibeDir, SANDBOX_VIBE_DIR } from "../paths.js";
 
-export async function up(): Promise<void> {
+export interface UpOptions {
+  shell?: boolean;
+}
+
+export async function up(options: UpOptions = {}): Promise<void> {
   const cwd = process.cwd();
   const vibeDir = findSandboxVibeDir(cwd);
   if (!vibeDir) {
@@ -18,6 +22,12 @@ export async function up(): Promise<void> {
   await assertDockerAvailable();
   log("Building images...");
   await composeBuild(vibeDir);
-  log("Starting Claude REPL...");
-  await composeRun(vibeDir);
+
+  if (options.shell) {
+    log("Starting bash shell (Claude REPL skipped)...");
+    await composeRun(vibeDir, { env: { SANDBOX_VIBE_MODE: "shell" } });
+  } else {
+    log("Starting Claude REPL...");
+    await composeRun(vibeDir);
+  }
 }

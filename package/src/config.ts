@@ -62,10 +62,10 @@ export const DEFAULT_MARKETPLACES: string[] = [
 ];
 
 export const DEFAULT_RESOURCES: Resources = {
-  cpus: 4,
-  memoryGB: 4,
-  pids: 256,
-  tmpfsMB: 512,
+  cpus: 2,
+  memoryGB: 2,
+  pids: 128,
+  tmpfsMB: 256,
 };
 
 // Strict identifier patterns. Defense in depth against shell injection
