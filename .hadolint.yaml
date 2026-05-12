@@ -12,7 +12,7 @@ ignored:
   - DL3008
   # DL3007 (use of `:latest` tag): not enforced for the override layer.
   # `Dockerfile.sandbox.override.example` starts with `FROM
-  # vibe-sandbox-base:latest`, where `vibe-sandbox-base` is a tag that
+  # sandbox-vibe-base:latest`, where `sandbox-vibe-base` is a tag that
   # this very template produces locally during `docker compose build`.
   # It is not a public registry image, so pinning a digest is neither
   # possible (the digest changes on every rebuild) nor useful.

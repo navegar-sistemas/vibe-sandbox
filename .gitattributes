@@ -3,8 +3,8 @@
 # unrelated to this project). The files are plain Dockerfile/YAML used by
 # the CLI's renderer; classify them as such so the language stats reflect
 # what the repository actually contains.
-cli/templates/Dockerfile*.tpl              linguist-language=Dockerfile
-cli/templates/docker-compose*.yml.tpl      linguist-language=YAML
+package/templates/Dockerfile*.tpl              linguist-language=Dockerfile
+package/templates/docker-compose*.yml.tpl      linguist-language=YAML
 
 # The CLI build artefacts are gitignored; if any slip in, exclude from stats.
-cli/dist/**                                linguist-generated=true
+package/dist/**                                linguist-generated=true

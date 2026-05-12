@@ -31,9 +31,9 @@
 # downstream users execute; package.json controls the dependency graph
 # that lands on every user's machine; the build config decides what is
 # bundled. All require explicit owner review.
-/cli/package.json              @navegar-sistemas
-/cli/package-lock.json         @navegar-sistemas
-/cli/tsup.config.ts            @navegar-sistemas
-/cli/tsconfig.json             @navegar-sistemas
-/cli/templates/                @navegar-sistemas
-/cli/src/                      @navegar-sistemas
+/package/package.json              @navegar-sistemas
+/package/package-lock.json         @navegar-sistemas
+/package/tsup.config.ts            @navegar-sistemas
+/package/tsconfig.json             @navegar-sistemas
+/package/templates/                @navegar-sistemas
+/package/src/                      @navegar-sistemas

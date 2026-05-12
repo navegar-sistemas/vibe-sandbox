@@ -21,9 +21,9 @@ import {
 } from "../config.js";
 import { log } from "../log.js";
 import {
-  findVibeSandboxDir,
-  vibeSandboxPath,
-  VIBE_SANDBOX_DIR,
+  findSandboxVibeDir,
+  sandboxVibePath,
+  SANDBOX_VIBE_DIR,
 } from "../paths.js";
 import { checkbox, confirm, input, select } from "../prompts.js";
 import { computeMarker, renderAll } from "../render.js";
@@ -55,16 +55,16 @@ export type InitOptions = {
 
 export async function init(opts: InitOptions = {}): Promise<void> {
   const cwd = process.cwd();
-  const existingDir = findVibeSandboxDir(cwd);
+  const existingDir = findSandboxVibeDir(cwd);
 
   if (existingDir && !opts.force) {
     if (opts.nonInteractive) {
       throw new Error(
-        `${VIBE_SANDBOX_DIR}/ already exists. Use --force to overwrite.`,
+        `${SANDBOX_VIBE_DIR}/ already exists. Use --force to overwrite.`,
       );
     }
     const overwrite = await confirm({
-      message: `${VIBE_SANDBOX_DIR}/ already exists. Overwrite?`,
+      message: `${SANDBOX_VIBE_DIR}/ already exists. Overwrite?`,
       default: false,
     });
     if (!overwrite) {
@@ -78,8 +78,8 @@ export async function init(opts: InitOptions = {}): Promise<void> {
     : await runWizard(cwd);
   config.marker = computeMarker(config);
 
-  const destDir = vibeSandboxPath(cwd);
-  // Refuse to write through a symlinked .vibe-sandbox/. mkdir { recursive }
+  const destDir = sandboxVibePath(cwd);
+  // Refuse to write through a symlinked .sandbox-vibe/. mkdir { recursive }
   // would silently no-op when the path exists, and the subsequent writeFile
   // calls would then follow the symlink (e.g. into /etc) and clobber host
   // files. lstat (not stat) inspects the link itself.
@@ -107,8 +107,8 @@ export async function init(opts: InitOptions = {}): Promise<void> {
     await maybeUpdateGitignore(cwd);
   }
 
-  log(`Wrote ${VIBE_SANDBOX_DIR}/ with marker ${config.marker}.`);
-  log("Run 'vibe-sandbox up' to start the sandbox.");
+  log(`Wrote ${SANDBOX_VIBE_DIR}/ with marker ${config.marker}.`);
+  log("Run 'sandbox-vibe up' to start the sandbox.");
 }
 
 function buildDefaultConfig(cwd: string): Config {
@@ -250,7 +250,14 @@ async function promptMcps(): Promise<Config["mcps"]> {
     const name = await input({
       message: "MCP name",
       default: "context7",
-      validate: (value) => validateMcpName(value),
+      validate: (value) => {
+        const nameCheck = validateMcpName(value);
+        if (nameCheck !== true) return nameCheck;
+        if (mcps.some((m) => m.name === value)) {
+          return `MCP name "${value}" already added — pick a different name`;
+        }
+        return true;
+      },
     });
     const url = await input({
       message: "MCP URL",
@@ -311,7 +318,7 @@ async function promptPositiveNumber(
 
 async function maybeUpdateGitignore(cwd: string): Promise<void> {
   const gitignorePath = join(cwd, ".gitignore");
-  const entry = `/${VIBE_SANDBOX_DIR}/`;
+  const entry = `/${SANDBOX_VIBE_DIR}/`;
 
   // lstat (not stat) so we see the symlink itself, not its target.
   // Refusing to follow a symlink prevents an attacker who controls the

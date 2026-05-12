@@ -36,7 +36,7 @@ updates:
       - "navegar-sistemas"
 
   - package-ecosystem: "npm"
-    directory: "/cli"
+    directory: "/package"
     schedule:
       interval: "weekly"
       day: "monday"

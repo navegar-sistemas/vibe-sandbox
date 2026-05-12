@@ -1,10 +1,10 @@
 ---
-description: Run all local linters and validations for the vibe-sandbox template
+description: Run all local linters and validations for the sandbox-vibe template
 allowed-tools: Bash(docker compose:*), Bash(hadolint:*), Bash(markdownlint-cli2:*), Bash(gitleaks:*), Bash(cp:*), Bash(rm:*), Bash(which:*)
 argument-hint: (no arguments)
 ---
 
-You are validating the vibe-sandbox template locally. Run every step below in sequence, capturing the output. Do **not** stop on first failure — collect every result and report at the end.
+You are validating the sandbox-vibe template locally. Run every step below in sequence, capturing the output. Do **not** stop on first failure — collect every result and report at the end.
 
 ## Steps
 
@@ -17,9 +17,9 @@ For each step: announce the command, run it, show its exit code, and keep the la
    Copy `docker-compose.override.example.yml` to a temp file, merge-validate it, then remove the temp:
 
    ```bash
-   cp docker-compose.override.example.yml /tmp/vibe-sandbox-validate-override.yml
-   docker compose -f docker-compose.sandbox.yml -f /tmp/vibe-sandbox-validate-override.yml config --quiet
-   rm /tmp/vibe-sandbox-validate-override.yml
+   cp docker-compose.override.example.yml /tmp/sandbox-vibe-validate-override.yml
+   docker compose -f docker-compose.sandbox.yml -f /tmp/sandbox-vibe-validate-override.yml config --quiet
+   rm /tmp/sandbox-vibe-validate-override.yml
    ```
 
    Any "variable is not set" warning is a defect (typically a `$VAR` in the entrypoint not escaped as `$$VAR`); the step must be marked FAIL when such a warning appears, regardless of compose's exit code. The repository treats warnings as defects of the same severity as errors.

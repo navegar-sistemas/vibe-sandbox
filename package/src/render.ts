@@ -100,7 +100,7 @@ export function computeMarker(config: Config): string {
 }
 
 // Compose project name comes from the directory containing the YAML, which
-// is `.vibe-sandbox` for every consumer of this CLI. Without further
+// is `.sandbox-vibe` for every consumer of this CLI. Without further
 // scoping, two unrelated projects would share the `sandbox-home` volume
 // and leak Claude sessions, marketplace tokens, and installed plugins
 // between them. The slug isolates volumes per workspace; a SHA-8 of the
@@ -143,43 +143,68 @@ export function renderEnabledPluginsBlock(config: Config): string {
   return JSON.stringify(obj, null, 2).replace(/\n/g, "\n          ");
 }
 
+// Defensive dedupe by identity for each block: validateConfig already
+// rejects duplicates, but a config.json hand-edited between load and
+// render could still smuggle them in. `claude plugin marketplace add` and
+// `claude mcp add` exit non-zero on duplicate registration; combined with
+// the entrypoint's `set -e`, that would abort the bootstrap before the
+// marker is written and trap the volume in a half-bootstrapped state.
+
+function dedupe<T>(items: readonly T[], key: (x: T) => string): T[] {
+  const seen = new Set<string>();
+  const out: T[] = [];
+  for (const item of items) {
+    const k = key(item);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push(item);
+  }
+  return out;
+}
+
 export function renderMarketplacesBlock(config: Config): string {
-  if (config.marketplaces.length === 0) {
+  const unique = dedupe(config.marketplaces, (m) => m);
+  if (unique.length === 0) {
     return "";
   }
   // Output of `claude plugin marketplace add` may include a clone URL with
   // an embedded credential when the host has Git auth configured. Redirect
   // to the (chmod-600) bootstrap log instead of teeing into the agent's
   // stdout where the assistant could later read it via tool use.
-  return config.marketplaces
+  // `|| true` keeps the bootstrap idempotent across volume retries: a
+  // partial earlier run may have already registered the marketplace.
+  return unique
     .map(
       (m) =>
-        `          claude plugin marketplace add ${m} >>"$$BOOT_LOG" 2>&1`,
+        `          claude plugin marketplace add ${m} >>"$$BOOT_LOG" 2>&1 || true`,
     )
     .join("\n");
 }
 
 export function renderPluginLoopBlock(config: Config): string {
-  if (config.plugins.length === 0) {
+  const unique = dedupe(config.plugins, (p) => p);
+  if (unique.length === 0) {
     return `            ""`;
   }
-  return config.plugins
+  return unique
     .map((p, idx) => {
-      const continuation = idx === config.plugins.length - 1 ? "" : " \\";
+      const continuation = idx === unique.length - 1 ? "" : " \\";
       return `            "${p}"${continuation}`;
     })
     .join("\n");
 }
 
 export function renderMcpsBlock(config: Config): string {
-  if (config.mcps.length === 0) {
+  const unique = dedupe(config.mcps, (m) => m.name);
+  if (unique.length === 0) {
     return "";
   }
   // MCP URLs can carry secrets in basic-auth or query parameters; redirect
   // command output to the chmod-600 bootstrap log instead of teeing.
-  const lines = config.mcps.map(
+  // `|| true` keeps the bootstrap idempotent across volume retries.
+  const lines = unique.map(
     (m) =>
-      `          claude mcp add ${m.name} --scope user --transport ${m.transport} ${m.url} >>"$$BOOT_LOG" 2>&1`,
+      `          claude mcp add ${m.name} --scope user --transport ${m.transport} ${m.url} >>"$$BOOT_LOG" 2>&1 || true`,
   );
   return "\n" + lines.join("\n") + "\n";
 }

@@ -1,6 +1,6 @@
-# vibe-sandbox
+# sandbox-vibe
 
-[![CI](https://github.com/navegar-sistemas/vibe-sandbox/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/navegar-sistemas/vibe-sandbox/actions/workflows/ci.yml)
+[![CI](https://github.com/navegar-sistemas/sandbox-vibe/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/navegar-sistemas/sandbox-vibe/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fe5196.svg)](https://www.conventionalcommits.org)
 [![Hadolint](https://img.shields.io/badge/lint-hadolint-22a7f0)](https://github.com/hadolint/hadolint)
@@ -14,7 +14,7 @@ When you let an AI agent edit your code, three things must hold at the same time
 2. The agent **can** read and write only on the projects you authorize.
 3. You **don't waste time** reconfiguring plugins, MCPs, and language servers every time you spin up a new container.
 
-`vibe-sandbox` delivers all three through a four-file Docker template, available as a CLI on npm.
+`sandbox-vibe` delivers all three through a four-file Docker template, available as a CLI on npm.
 
 ---
 
@@ -23,11 +23,11 @@ When you let an AI agent edit your code, three things must hold at the same time
 From inside the project you want to sandbox:
 
 ```bash
-npx @navegar-sistemas/vibe-sandbox init     # interactive wizard
-npx @navegar-sistemas/vibe-sandbox up       # build + run the Claude REPL
+npx sandbox-vibe init     # interactive wizard
+npx sandbox-vibe up       # build + run the Claude REPL
 ```
 
-The wizard asks for the workspace path, optional sibling mounts, your stack (PHP / .NET / Python / Go / Rust LSP support), plugins, MCP servers, and resource limits. It writes the four sandbox files plus a `config.json` to `.vibe-sandbox/` in your project root and updates `.gitignore` for you.
+The wizard asks for the workspace path, optional sibling mounts, your stack (PHP / .NET / Python / Go / Rust LSP support), plugins, MCP servers, and resource limits. It writes the four sandbox files plus a `config.json` to `.sandbox-vibe/` in your project root and updates `.gitignore` for you.
 
 That is the whole setup. The first `up` runs the bootstrap (installs marketplaces, plugins, MCPs, language servers) and drops into the Claude REPL. Every subsequent `up` skips the bootstrap and opens the REPL in milliseconds.
 

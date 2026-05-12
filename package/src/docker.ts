@@ -58,7 +58,7 @@ function composeFlags(vibeDir: string): string[] {
 }
 
 export async function composeBuild(vibeDir: string): Promise<void> {
-  // The override's `FROM vibe-sandbox-base:latest` depends on the base image
+  // The override's `FROM sandbox-vibe-base:latest` depends on the base image
   // existing locally. Build the base alone first, then the override on top.
   await execa(
     "docker",

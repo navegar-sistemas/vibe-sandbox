@@ -12,7 +12,7 @@
 
 services:
   sandbox:
-    image: vibe-sandbox:latest
+    image: sandbox-vibe:latest
     build:
       context: .
       dockerfile: Dockerfile.sandbox.override

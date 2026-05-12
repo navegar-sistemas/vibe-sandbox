@@ -7,7 +7,7 @@
 #
 # Comment/uncomment blocks according to your stack.
 
-FROM vibe-sandbox-base:latest
+FROM sandbox-vibe-base:latest
 
 USER root
 

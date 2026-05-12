@@ -1,4 +1,4 @@
-# Contributing to vibe-sandbox
+# Contributing to sandbox-vibe
 
 Thanks for considering a contribution. This template stays small on purpose — that is the value proposition. Before opening a PR, please read this document.
 
@@ -13,7 +13,7 @@ Thanks for considering a contribution. This template stays small on purpose — 
 
 - **Bugs** → open an issue with the [bug report template](.github/ISSUE_TEMPLATE/bug_report.yml). Include Docker version, host OS, Claude Code version, and reproduction steps.
 - **Features** → open an issue with the [feature request template](.github/ISSUE_TEMPLATE/feature_request.yml). Describe the problem first; the proposed solution is secondary.
-- **Questions / "is this the right approach?"** → please use [GitHub Discussions](https://github.com/navegar-sistemas/vibe-sandbox/discussions) instead of issues.
+- **Questions / "is this the right approach?"** → please use [GitHub Discussions](https://github.com/navegar-sistemas/sandbox-vibe/discussions) instead of issues.
 - **Security vulnerabilities** → see [SECURITY.md](SECURITY.md). Do **not** open a public issue.
 
 ## Pull request flow

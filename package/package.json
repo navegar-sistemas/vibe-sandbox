@@ -1,13 +1,14 @@
 {
-  "name": "@navegar-sistemas/vibe-sandbox",
-  "version": "0.1.0",
+  "name": "sandbox-vibe",
+  "version": "0.1.2",
   "description": "Plug-and-play Docker sandbox for Claude Code with idempotent plugin and MCP bootstrap and security limits enforced by default",
   "type": "module",
   "bin": {
-    "vibe-sandbox": "./dist/cli.mjs"
+    "sandbox-vibe": "dist/cli.mjs"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "engines": {
     "node": ">=20.0.0"
@@ -30,12 +31,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/navegar-sistemas/vibe-sandbox.git",
-    "directory": "cli"
+    "url": "git+https://github.com/navegar-sistemas/sandbox-vibe.git",
+    "directory": "package"
   },
-  "homepage": "https://github.com/navegar-sistemas/vibe-sandbox#readme",
+  "homepage": "https://github.com/navegar-sistemas/sandbox-vibe#readme",
   "bugs": {
-    "url": "https://github.com/navegar-sistemas/vibe-sandbox/issues"
+    "url": "https://github.com/navegar-sistemas/sandbox-vibe/issues"
   },
   "keywords": [
     "docker",

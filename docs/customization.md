@@ -2,7 +2,7 @@
 
 How to extend the sandbox after the initial setup: add a language server for your stack, add an MCP server, and change resource limits.
 
-If you used `vibe-sandbox init`, edit the files in `.vibe-sandbox/` (the wizard already wrote them); if you set the template up by hand, edit the override files at the project root.
+If you used `sandbox-vibe init`, edit the files in `.sandbox-vibe/` (the wizard already wrote them); if you set the template up by hand, edit the override files at the project root.
 
 ---
 
@@ -83,7 +83,7 @@ Increasing `pids` is the most common adjustment — workflows that run a watcher
 The base image ships only Node, git, curl, and python3. To add a runtime, edit `Dockerfile.sandbox.override`:
 
 ```dockerfile
-FROM vibe-sandbox-base:latest
+FROM sandbox-vibe-base:latest
 
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \

@@ -1,4 +1,4 @@
-# vibe-sandbox base image.
+# sandbox-vibe base image.
 # Kept intentionally minimal: only universally useful tooling, nothing else.
 # Anything stack-specific (PHP intelephense, .NET SDK, Flutter, etc.)
 # goes in your project's Dockerfile.sandbox.override.

@@ -1,10 +1,10 @@
-# vibe-sandbox tracked compose.
+# sandbox-vibe tracked compose.
 # Defines the base image and the security/resource limits that apply to any project.
 # Project volumes, plugins, MCPs and a custom entrypoint go in docker-compose.override.yml.
 
 services:
   sandbox:
-    image: vibe-sandbox-base:latest
+    image: sandbox-vibe-base:latest
     build:
       context: .
       dockerfile: Dockerfile.sandbox

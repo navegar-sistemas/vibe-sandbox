@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Discussion / Question
-    url: https://github.com/navegar-sistemas/vibe-sandbox/discussions
+    url: https://github.com/navegar-sistemas/sandbox-vibe/discussions
     about: For general questions, "is this the right approach?", or to share your stack — use Discussions instead of an issue.
   - name: Security vulnerability
-    url: https://github.com/navegar-sistemas/vibe-sandbox/security/advisories/new
+    url: https://github.com/navegar-sistemas/sandbox-vibe/security/advisories/new
     about: Report a vulnerability privately. Please do NOT open a public issue.

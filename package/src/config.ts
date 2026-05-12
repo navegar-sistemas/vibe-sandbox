@@ -219,11 +219,18 @@ function validateConfig(value: unknown): asserts value is Config {
   ) {
     throw new Error("config.json: plugins must be an array of strings.");
   }
+  const pluginSeen = new Set<string>();
   for (const p of cfg.plugins) {
     const r = validatePluginRef(p as string);
     if (r !== true) {
       throw new Error(`config.json: plugin '${String(p)}' invalid — ${r}.`);
     }
+    if (pluginSeen.has(p)) {
+      throw new Error(
+        `config.json: plugins contains duplicate entry '${p}'; each plugin must appear at most once.`,
+      );
+    }
+    pluginSeen.add(p);
   }
 
   if (
@@ -232,11 +239,18 @@ function validateConfig(value: unknown): asserts value is Config {
   ) {
     throw new Error("config.json: marketplaces must be an array of strings.");
   }
+  const marketplaceSeen = new Set<string>();
   for (const m of cfg.marketplaces) {
     const r = validateMarketplaceRef(m as string);
     if (r !== true) {
       throw new Error(`config.json: marketplace '${String(m)}' invalid — ${r}.`);
     }
+    if (marketplaceSeen.has(m)) {
+      throw new Error(
+        `config.json: marketplaces contains duplicate entry '${m}'; each marketplace must appear at most once.`,
+      );
+    }
+    marketplaceSeen.add(m);
   }
 
   if (!Array.isArray(cfg.mcps) || !cfg.mcps.every(isMcp)) {
@@ -244,6 +258,7 @@ function validateConfig(value: unknown): asserts value is Config {
       "config.json: mcps must be an array of { name: string, transport: 'http'|'sse', url: string }.",
     );
   }
+  const mcpSeen = new Set<string>();
   for (const m of cfg.mcps) {
     const nameCheck = validateMcpName(m.name);
     if (nameCheck !== true) {
@@ -253,6 +268,12 @@ function validateConfig(value: unknown): asserts value is Config {
     if (urlCheck !== true) {
       throw new Error(`config.json: mcps[].url '${m.url}' invalid — ${urlCheck}.`);
     }
+    if (mcpSeen.has(m.name)) {
+      throw new Error(
+        `config.json: mcps contains duplicate name '${m.name}'; each MCP must have a unique name (claude mcp add rejects duplicates and the bootstrap container aborts).`,
+      );
+    }
+    mcpSeen.add(m.name);
   }
 
   if (

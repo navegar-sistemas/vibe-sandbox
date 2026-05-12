@@ -23,7 +23,7 @@ Accepting the warning silently is not a valid resolution — see the warnings-as
 
 Compose interpolates `$VAR` in YAML strings before bash sees them. If you added a bash variable to the entrypoint, you must escape it with `$$VAR` (two dollar signs) so Compose passes it through verbatim.
 
-This applies to `$p` in the plugin install loop, `$BOOT_LOG`, and any other shell variable that appears inside a YAML string. The two-dollar escape is the convention in `cli/templates/docker-compose.override.yml.tpl` and in `docker-compose.override.example.yml` — copy the pattern from there if in doubt.
+This applies to `$p` in the plugin install loop, `$BOOT_LOG`, and any other shell variable that appears inside a YAML string. The two-dollar escape is the convention in `package/templates/docker-compose.override.yml.tpl` and in `docker-compose.override.example.yml` — copy the pattern from there if in doubt.
 
 ---
 
@@ -67,7 +67,7 @@ If you do not use C# / .NET at all, comment the entire `.NET` block out of `Dock
 This is a path-with-spaces issue. The CLI accepts paths with spaces, but your shell may be splitting the argument before it reaches Node. Quote the path:
 
 ```bash
-npx @navegar-sistemas/vibe-sandbox init --workspace "/Users/me/My Projects/foo"
+npx sandbox-vibe init --workspace "/Users/me/My Projects/foo"
 ```
 
 ---
@@ -75,7 +75,7 @@ npx @navegar-sistemas/vibe-sandbox init --workspace "/Users/me/My Projects/foo"
 ## CLI complains about Compose version
 
 ```text
-[vibe-sandbox] Requires Docker Compose v2 or newer. Found '5.1.3'; please upgrade.
+[sandbox-vibe] Requires Docker Compose v2 or newer. Found '5.1.3'; please upgrade.
 ```
 
 Despite the message wording, version `5.1.3` (or any version with major ≥ 2) is accepted. If you see this error with a newer Compose, run `docker compose version` and ensure it reports a version starting with a digit ≥ 2 — Compose v1 (`docker-compose`, with the hyphen) is not supported.

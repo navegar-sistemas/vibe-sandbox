@@ -1,14 +1,14 @@
 import { loadConfig, saveConfig } from "../config.js";
 import { log } from "../log.js";
-import { findVibeSandboxDir, VIBE_SANDBOX_DIR } from "../paths.js";
+import { findSandboxVibeDir, SANDBOX_VIBE_DIR } from "../paths.js";
 import { renderAll } from "../render.js";
 
 export async function bumpMarker(): Promise<void> {
   const cwd = process.cwd();
-  const vibeDir = findVibeSandboxDir(cwd);
+  const vibeDir = findSandboxVibeDir(cwd);
   if (!vibeDir) {
     throw new Error(
-      `No ${VIBE_SANDBOX_DIR}/ found. Run vibe-sandbox init first.`,
+      `No ${SANDBOX_VIBE_DIR}/ found. Run sandbox-vibe init first.`,
     );
   }
 

@@ -1,10 +1,10 @@
 ---
-description: Build the vibe-sandbox base image and run a functional smoke test
+description: Build the sandbox-vibe base image and run a functional smoke test
 allowed-tools: Bash(docker compose:*), Bash(docker run:*), Bash(docker images:*)
 argument-hint: (no arguments)
 ---
 
-You are smoke-testing the vibe-sandbox base image. Goal: prove that the image builds, the `sandbox` non-root user is in place, required tools are on PATH, and the documented security defaults are actually applied at runtime.
+You are smoke-testing the sandbox-vibe base image. Goal: prove that the image builds, the `sandbox` non-root user is in place, required tools are on PATH, and the documented security defaults are actually applied at runtime.
 
 ## Steps
 
@@ -17,7 +17,7 @@ Run each in sequence. Do not skip on first failure — collect all results.
 2. **Tools on PATH** — required runtimes/utilities are reachable from the default user:
 
    ```bash
-   docker run --rm --entrypoint bash vibe-sandbox-base:latest -c '
+   docker run --rm --entrypoint bash sandbox-vibe-base:latest -c '
      set -e
      node --version
      git --version
@@ -31,7 +31,7 @@ Run each in sequence. Do not skip on first failure — collect all results.
 3. **Non-root user** — the container runs as `sandbox`, not root:
 
    ```bash
-   docker run --rm --entrypoint bash vibe-sandbox-base:latest -c 'id -un'
+   docker run --rm --entrypoint bash sandbox-vibe-base:latest -c 'id -un'
    ```
 
    Output must equal `sandbox`. Anything else is a regression.
@@ -44,7 +44,7 @@ Run each in sequence. Do not skip on first failure — collect all results.
      --cap-drop=ALL \
      --security-opt=no-new-privileges:true \
      --pids-limit=256 \
-     vibe-sandbox-base:latest \
+     sandbox-vibe-base:latest \
      bash -c 'cat /proc/self/status | grep -E "^(CapEff|NoNewPrivs)"'
    ```
 
@@ -55,7 +55,7 @@ Run each in sequence. Do not skip on first failure — collect all results.
    Anything else means a security regression and the build must FAIL.
 
 5. **Image size sanity check**
-   `docker images vibe-sandbox-base:latest --format '{{.Size}}'`
+   `docker images sandbox-vibe-base:latest --format '{{.Size}}'`
    Note the size. If it grew significantly without an explanation in the diff, flag it (the base is supposed to stay slim — see .claude/CLAUDE.md "Slim and minimum-purpose").
 
 ## Final summary
@@ -64,7 +64,7 @@ Table of step / PASS or FAIL / observed value. If every step passes, print:
 
 ```text
 SMOKE OK — base image is functional and security-correct.
-Image: vibe-sandbox-base:latest
+Image: sandbox-vibe-base:latest
 Size : <size>
 User : sandbox
 ```

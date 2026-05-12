@@ -4,14 +4,14 @@ import {
   composeRun,
 } from "../docker.js";
 import { log } from "../log.js";
-import { findVibeSandboxDir, VIBE_SANDBOX_DIR } from "../paths.js";
+import { findSandboxVibeDir, SANDBOX_VIBE_DIR } from "../paths.js";
 
 export async function up(): Promise<void> {
   const cwd = process.cwd();
-  const vibeDir = findVibeSandboxDir(cwd);
+  const vibeDir = findSandboxVibeDir(cwd);
   if (!vibeDir) {
     throw new Error(
-      `No ${VIBE_SANDBOX_DIR}/ found in current directory. Run 'vibe-sandbox init' first or cd into the project root.`,
+      `No ${SANDBOX_VIBE_DIR}/ found in current directory. Run 'sandbox-vibe init' first or cd into the project root.`,
     );
   }
 

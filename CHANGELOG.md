@@ -1,14 +1,19 @@
 # Changelog
 
-All notable changes to `vibe-sandbox` will be documented in this file.
+All notable changes to `sandbox-vibe` will be documented in this file.
 
 The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Duplicate MCP names no longer wedge the bootstrap container.** Before, the `init` wizard happily accepted the same MCP name twice (e.g. confirming the default `context7` on two consecutive iterations), and the rendered `docker-compose.override.yml` then emitted two `claude mcp add context7 ...` lines. The second call exits non-zero because that name is already registered; with `set -e -o pipefail` the entrypoint aborts before `touch ~/.claude/.bootstrap-<hash>`, leaving the volume in a half-initialised state from which subsequent `up` runs cannot recover without a manual `docker volume prune`. Three defences in depth land together: (1) `promptMcps` re-prompts when the typed name is already present in the in-progress list; (2) `validateConfig` rejects `mcps[]` with duplicate names (and now also `plugins[]` / `marketplaces[]` with duplicates), so an adulterated `config.json` cannot smuggle them past `up`; (3) `renderMcpsBlock` / `renderMarketplacesBlock` / `renderPluginLoopBlock` deduplicate defensively by identity before emitting a single line per entry.
+- **Bootstrap is now resumable after a partial failure.** `claude plugin marketplace add` and `claude mcp add` now run with a trailing `|| true` in the rendered entrypoint. Previously, if any earlier `up` got far enough to register a marketplace or an MCP but then aborted (e.g. for an unrelated reason — flaky network during a `claude plugin install`), every subsequent `up` would hit "already exists" on the second try, abort under `set -e`, and require the user to manually `docker volume rm <project>-sandbox-home` to start over. The `|| true` only silences the idempotent "already registered" error; a real failure surfaces immediately downstream because `claude plugin install` (kept rigorous, no `|| true`) refuses to install plugins from an unregistered marketplace.
+
 ### Added
 
-- `cli/` package published to npm as `@navegar-sistemas/vibe-sandbox` — a TypeScript CLI that replaces the 9-step manual setup with two commands (`vibe-sandbox init` + `vibe-sandbox up`). The `init` wizard asks for workspace path, additional mounts, stack (none / php / dotnet / python / go / rust), plugins, MCP servers, and resource limits, then generates the four sandbox files and a `config.json` under `.vibe-sandbox/`. The bootstrap marker is auto-derived from a SHA-256 hash (16 hex chars) of plugins, marketplaces, and MCPs — any change to those lists triggers an automatic re-bootstrap on the next `up`. A `bump-marker` command remains as an escape hatch for forced re-bootstrap. The CLI is additive: the manual setup below remains fully supported.
+- `package/` package published to npm as `sandbox-vibe` — a TypeScript CLI that replaces the 9-step manual setup with two commands (`sandbox-vibe init` + `sandbox-vibe up`). The `init` wizard asks for workspace path, additional mounts, stack (none / php / dotnet / python / go / rust), plugins, MCP servers, and resource limits, then generates the four sandbox files and a `config.json` under `.sandbox-vibe/`. The bootstrap marker is auto-derived from a SHA-256 hash (16 hex chars) of plugins, marketplaces, and MCPs — any change to those lists triggers an automatic re-bootstrap on the next `up`. A `bump-marker` command remains as an escape hatch for forced re-bootstrap. The CLI is additive: the manual setup below remains fully supported.
 
 ### Security
 
@@ -22,9 +27,9 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - **Error message sanitization**: `describeError` substitutes `os.homedir()` with `~` in any logged error (including `ExecaError.shortMessage`), preventing the user's absolute filesystem layout from leaking into shared CI/CD logs.
 - **GitHub Actions pinned by commit SHA**: `actions/checkout`, `hadolint/hadolint-action`, `DavidAnson/markdownlint-cli2-action`, `gitleaks/gitleaks-action`, `docker/setup-buildx-action` are now pinned to immutable commit hashes (with the floating tag in a trailing comment for human reference). Mitigates supply-chain attacks via tag retargeting.
 - **Dependabot now covers the `cli/` npm package**: weekly updates with `versioning-strategy: increase`. Closes the gap where transitive vulnerabilities in `@inquirer/prompts`, `commander`, `execa`, `tsup`, `typescript`, and `@types/node` were never auto-patched.
-- **`CODEOWNERS` extended** to require `@navegar-sistemas` review on `cli/package.json`, `cli/package-lock.json`, `cli/tsup.config.ts`, `cli/tsconfig.json`, `cli/templates/`, and `cli/src/`. A typosquatted dep, malicious template, or build-pipeline edit cannot land without owner approval.
-- Initial public release of the `vibe-sandbox` template.
-- Base image (`vibe-sandbox-base:latest`) on `node:24-slim` with `git`, `curl`, `ca-certificates`, `openssh-client`, `python3`, `unzip`, `zip`.
+- **`CODEOWNERS` extended** to require `@navegar-sistemas` review on `package/package.json`, `package/package-lock.json`, `package/tsup.config.ts`, `package/tsconfig.json`, `package/templates/`, and `package/src/`. A typosquatted dep, malicious template, or build-pipeline edit cannot land without owner approval.
+- Initial public release of the `sandbox-vibe` template.
+- Base image (`sandbox-vibe-base:latest`) on `node:24-slim` with `git`, `curl`, `ca-certificates`, `openssh-client`, `python3`, `unzip`, `zip`.
 - Non-root `sandbox` user inside the container.
 - `docker-compose.sandbox.yml` with hardened defaults: `cap_drop: ALL`, `no-new-privileges`, `network_mode: bridge`, `pids: 256`, CPU/memory limits, and `tmpfs /tmp`.
 - `Dockerfile.sandbox.override.example` with optional commented blocks for PHP (intelephense), C# / .NET (csharp-ls), Python (pyright), Go (gopls), and Rust (rust-analyzer).
@@ -34,10 +39,10 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - `CONTRIBUTING.md` with ground rules, PR flow, and Conventional Commits guide.
 - `SECURITY.md` with private vulnerability reporting policy.
 - `.claude/CLAUDE.md` with guidance for Claude Code agents working on the template, including the repository-wide rule that warnings are defects of the same severity as errors (no intermediate severity is tolerated between approval and blocking) and the explicit recognition that the AI-governance tooling under `.claude/` is cooperative rather than adversarial.
-- `SECURITY.md` "Threat model boundary" section documenting that `vibe-sandbox` controls the agent inside the container (Docker-enforced) but not an agent editing the template repository itself; the latter is governed by branch protection, CODEOWNERS, server-side CI, and human review.
+- `SECURITY.md` "Threat model boundary" section documenting that `sandbox-vibe` controls the agent inside the container (Docker-enforced) but not an agent editing the template repository itself; the latter is governed by branch protection, CODEOWNERS, server-side CI, and human review.
 - `.github/CODEOWNERS` extended to cover AI-governance surfaces (`.claude/CLAUDE.md`, `.claude/agents/`, `.claude/commands/`, `.claude/hooks/`, `.claude/settings.json`) and lint configuration (`.hadolint.yaml`, `.markdownlint.jsonc`, `.editorconfig`); changes to these files require explicit owner review.
 - GitHub Actions CI: hadolint, `docker compose config`, markdownlint, gitleaks, build smoke test.
 - Dependabot configuration for Docker base image and GitHub Actions updates.
 - Issue and pull request templates.
 
-[Unreleased]: https://github.com/navegar-sistemas/vibe-sandbox/compare/HEAD...HEAD
+[Unreleased]: https://github.com/navegar-sistemas/sandbox-vibe/compare/HEAD...HEAD

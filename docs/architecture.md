@@ -1,6 +1,6 @@
 # Architecture
 
-This document covers the design decisions behind `vibe-sandbox`: how the template is layered, how the bootstrap stays idempotent, what the security defaults are, and where the threat model boundary lies. Read this when you want to understand *why* something is the way it is, or before modifying the base template.
+This document covers the design decisions behind `sandbox-vibe`: how the template is layered, how the bootstrap stays idempotent, what the security defaults are, and where the threat model boundary lies. Read this when you want to understand *why* something is the way it is, or before modifying the base template.
 
 ---
 
@@ -10,13 +10,13 @@ The repository ships four files that combine into two layers.
 
 | Layer | Git status | Files | Contents |
 | --- | --- | --- | --- |
-| **Base** | tracked, generic | `Dockerfile.sandbox`, `docker-compose.sandbox.yml` | The minimal `vibe-sandbox-base:latest` image (`node:24-slim` + git + curl + python3 + non-root user) and the resource / capability defaults that every sandbox inherits. |
+| **Base** | tracked, generic | `Dockerfile.sandbox`, `docker-compose.sandbox.yml` | The minimal `sandbox-vibe-base:latest` image (`node:24-slim` + git + curl + python3 + non-root user) and the resource / capability defaults that every sandbox inherits. |
 | **Override example** | tracked, didactic | `Dockerfile.sandbox.override.example`, `docker-compose.override.example.yml` | Reference templates intended to be copied and edited. They show how to add stack-specific runtimes, plugin lists, MCPs, and bind mounts. |
 | **Real override** | gitignored | `Dockerfile.sandbox.override`, `docker-compose.override.yml` | Yours. Contains absolute paths, chosen plugins, MCP credentials, runtimes for your stack. Never committed. |
 
 **Rule:** any artifact containing absolute paths, credentials, specific plugin selections, or stack-specific runtimes is excluded from version control. The base layer must not reference any particular project, plugin, or stack.
 
-When you use the CLI, this split is preserved automatically: `vibe-sandbox init` writes the four files into `.vibe-sandbox/` inside your project, and `.gitignore` is updated to exclude the real-override files.
+When you use the CLI, this split is preserved automatically: `sandbox-vibe init` writes the four files into `.sandbox-vibe/` inside your project, and `.gitignore` is updated to exclude the real-override files.
 
 ---
 
@@ -94,7 +94,7 @@ The `.claude/` directory in this repository — agents, hooks, slash commands, a
 The load-bearing defenses against an adversarial editor are **process-level**:
 
 1. Branch protection on `main` (no direct pushes, required PR review).
-2. CODEOWNERS for AI-governance surfaces (`.claude/`, `.github/workflows/`, the base templates, lint configs, `cli/`).
+2. CODEOWNERS for AI-governance surfaces (`.claude/`, `.github/workflows/`, the base templates, lint configs, `package/`).
 3. Server-side CI that runs independently of any local hook configuration.
 4. Human review of every PR that modifies AI-governance surfaces.
 
@@ -104,7 +104,7 @@ This boundary is documented in detail in [`SECURITY.md`](../SECURITY.md) under "
 
 ## Origin
 
-`vibe-sandbox` was extracted from a real multi-stack project (Flutter + .NET + PHP, with nine sibling projects mounted in the same container, eleven plugins, two language servers, one MCP). The generic version drops what was specific to that stack but preserves the architectural decisions that hold for any project:
+`sandbox-vibe` was extracted from a real multi-stack project (Flutter + .NET + PHP, with nine sibling projects mounted in the same container, eleven plugins, two language servers, one MCP). The generic version drops what was specific to that stack but preserves the architectural decisions that hold for any project:
 
 - base / override split with distinct `image:` tags per layer,
 - `set -e -o pipefail` in the entrypoint,

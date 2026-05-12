@@ -1,4 +1,4 @@
-const PREFIX = "[vibe-sandbox]";
+const PREFIX = "[sandbox-vibe]";
 
 export function log(message: string): void {
   console.log(`${PREFIX} ${message}`);

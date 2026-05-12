@@ -30,7 +30,7 @@ function getVersion(): string {
 const program = new Command();
 
 program
-  .name("vibe-sandbox")
+  .name("sandbox-vibe")
   .description(
     "Plug-and-play Docker sandbox for Claude Code with idempotent plugin and MCP bootstrap and security limits enforced by default.",
   )
@@ -39,11 +39,11 @@ program
 program
   .command("init")
   .description(
-    "Generate the .vibe-sandbox/ directory in the current project.",
+    "Generate the .sandbox-vibe/ directory in the current project.",
   )
   .option(
     "-f, --force",
-    "overwrite an existing .vibe-sandbox/ without confirmation",
+    "overwrite an existing .sandbox-vibe/ without confirmation",
   )
   .option(
     "--non-interactive",

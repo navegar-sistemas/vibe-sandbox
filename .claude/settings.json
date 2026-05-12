@@ -15,7 +15,7 @@
       "Bash(git remote -v)",
       "Bash(git rev-parse:*)",
       "Bash(gh repo view:*)",
-      "Bash(gh api repos/navegar-sistemas/vibe-sandbox:*)",
+      "Bash(gh api repos/navegar-sistemas/sandbox-vibe:*)",
       "Bash(gh api users/navegar-sistemas)",
       "Bash(which:*)",
       "Bash(grep:*)",

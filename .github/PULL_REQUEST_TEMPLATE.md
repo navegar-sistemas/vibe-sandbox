@@ -58,4 +58,4 @@ Output / observed behavior:
 - [ ] If a security default was changed: trade-off documented in PR description and `README.md` "Security defaults" section
 - [ ] If the bootstrap marker was changed: every reference to `bootstrap-vN` was bumped consistently
 - [ ] No absolute paths, credentials, or project-specific content added to tracked files
-- [ ] Docs reference `navegar-sistemas/vibe-sandbox` rather than a personal fork
+- [ ] Docs reference `navegar-sistemas/sandbox-vibe` rather than a personal fork

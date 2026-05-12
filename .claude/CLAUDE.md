@@ -4,7 +4,7 @@ This document provides guidance for Claude Code agents working in this repositor
 
 ## Project Overview
 
-`vibe-sandbox` is a plug-and-play Docker template for running Claude Code (or another AI agent) in isolation, with idempotent bootstrap of plugins and MCP servers and a set of security limits applied by default.
+`sandbox-vibe` is a plug-and-play Docker template for running Claude Code (or another AI agent) in isolation, with idempotent bootstrap of plugins and MCP servers and a set of security limits applied by default.
 
 The repository is not an application but a four-file template — `Dockerfile.sandbox`, `docker-compose.sandbox.yml`, and the two `*.override.example` files — intended to be cloned or forked by downstream projects to obtain a single-command sandbox. The base stack is `node:24-slim` with `git`, `curl`, and `python3`. Additional runtimes (PHP, .NET, Python, Go, Rust) are introduced through the override layer.
 
@@ -40,7 +40,7 @@ The same checks run in continuous integration on every pull request and on each 
 
 | Layer | Git status | Contents |
 | --- | --- | --- |
-| Base — `Dockerfile.sandbox`, `docker-compose.sandbox.yml` | Tracked; generic | Minimal `vibe-sandbox-base:latest` image, CPU, memory, and PID limits, security defaults |
+| Base — `Dockerfile.sandbox`, `docker-compose.sandbox.yml` | Tracked; generic | Minimal `sandbox-vibe-base:latest` image, CPU, memory, and PID limits, security defaults |
 | Override example — `*.override.example` | Tracked; didactic | Reference template intended for the user to copy and edit |
 | Real override — `docker-compose.override.yml`, `Dockerfile.sandbox.override` | Gitignored | Project mounts with absolute paths, plugin and MCP list, stack-specific runtimes |
 
@@ -81,7 +81,7 @@ Any modification to the above constitutes an architectural decision and requires
 - **Edits to base versus override.** A change that applies universally is made to the base. A change specific to a stack, plugin, or path is made to the `*.example` template (or to the real `*.override`, which is gitignored).
 - **Minimal base.** The base image does not include `xz-utils`, manual pages, or supplementary runtimes. Adding a tracked dependency requires universal justification.
 - **Marker increments.** The marker name (`.bootstrap-v1`) and its number are coupled. A change that invalidates the previous state of the home volume must result in an increment at every occurrence — that is, at the two entrypoint sites that reference `bootstrap-v1`, and not at `settings.json`.
-- **Docker image tagging.** The base is tagged `vibe-sandbox-base:latest` and the override is tagged `vibe-sandbox:latest`. These tags must not be changed without a corresponding update to `README.md` and the relevant workflows.
+- **Docker image tagging.** The base is tagged `sandbox-vibe-base:latest` and the override is tagged `sandbox-vibe:latest`. These tags must not be changed without a corresponding update to `README.md` and the relevant workflows.
 
 ## Repository-wide rules
 

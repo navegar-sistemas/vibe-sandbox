@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-`vibe-sandbox` is a template, not a long-running service. The supported version is whatever is on the `main` branch and the most recent tagged release. Older tags are not actively maintained — please update to the latest before reporting an issue.
+`sandbox-vibe` is a template, not a long-running service. The supported version is whatever is on the `main` branch and the most recent tagged release. Older tags are not actively maintained — please update to the latest before reporting an issue.
 
 | Version | Supported |
 | --- | --- |
@@ -18,7 +18,7 @@
 
 Open a private advisory at:
 
-<https://github.com/navegar-sistemas/vibe-sandbox/security/advisories/new>
+<https://github.com/navegar-sistemas/sandbox-vibe/security/advisories/new>
 
 Reports here are encrypted and visible only to repository maintainers. You can include reproduction steps, affected configurations, and any patch suggestions.
 
@@ -41,7 +41,7 @@ If you don't get a response within 7 business days, please re-send the advisory 
 
 ## Out of scope
 
-The following are **not** considered vulnerabilities in `vibe-sandbox`:
+The following are **not** considered vulnerabilities in `sandbox-vibe`:
 
 - Issues that require modifying the `Dockerfile.sandbox.override` or `docker-compose.override.yml` to weaken the base security defaults (the user is responsible for not removing `cap_drop: ALL`, `no-new-privileges`, etc.)
 - Issues caused by mounting host directories with write permission and an untrusted agent — the threat model assumes the user controls which directories to mount
@@ -50,9 +50,9 @@ The following are **not** considered vulnerabilities in `vibe-sandbox`:
 
 ## Threat model boundary
 
-`vibe-sandbox` controls the AI agent that runs **inside** the container at use time. The Docker runtime enforces the limits — `cap_drop: ALL`, non-root user, `no-new-privileges`, `network_mode: bridge`, PID and `tmpfs` limits, and volume isolation between the host's `~/.claude` and the `sandbox-home` volume. The agent inside the container has no filesystem access to the template repository; it sees only what is mounted under `/workspace` and the contents of the `sandbox-home` volume.
+`sandbox-vibe` controls the AI agent that runs **inside** the container at use time. The Docker runtime enforces the limits — `cap_drop: ALL`, non-root user, `no-new-privileges`, `network_mode: bridge`, PID and `tmpfs` limits, and volume isolation between the host's `~/.claude` and the `sandbox-home` volume. The agent inside the container has no filesystem access to the template repository; it sees only what is mounted under `/workspace` and the contents of the `sandbox-home` volume.
 
-`vibe-sandbox` **does not and cannot** protect against an AI agent that is editing the template repository itself on a developer's host. That agent runs outside any sandbox defined by this template; whatever isolation it has comes from Claude Code's own permission system on the host, not from `vibe-sandbox`. Such an agent has filesystem access to every file in the repository, including the files in `.claude/` that govern its own behavior — the rules in `.claude/CLAUDE.md`, the agents in `.claude/agents/`, the hooks in `.claude/hooks/`, and the slash commands in `.claude/commands/`. A non-cooperating agent can edit those files to weaken the rules it is expected to follow.
+`sandbox-vibe` **does not and cannot** protect against an AI agent that is editing the template repository itself on a developer's host. That agent runs outside any sandbox defined by this template; whatever isolation it has comes from Claude Code's own permission system on the host, not from `sandbox-vibe`. Such an agent has filesystem access to every file in the repository, including the files in `.claude/` that govern its own behavior — the rules in `.claude/CLAUDE.md`, the agents in `.claude/agents/`, the hooks in `.claude/hooks/`, and the slash commands in `.claude/commands/`. A non-cooperating agent can edit those files to weaken the rules it is expected to follow.
 
 The defenses against this threat model are process-level, not file-level:
 

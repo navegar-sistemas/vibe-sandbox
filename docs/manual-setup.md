@@ -1,14 +1,14 @@
 # Manual setup
 
-Use this path when you want full control over the sandbox files and do not want to install the CLI. The CLI in [`cli/`](../cli/) automates everything below; the manual path is exactly the same template, edited by hand.
+Use this path when you want full control over the sandbox files and do not want to install the CLI. The CLI in [`package/`](../package/) automates everything below; the manual path is exactly the same template, edited by hand.
 
 ---
 
 ## 1. Clone or use as a template
 
 ```bash
-git clone https://github.com/navegar-sistemas/vibe-sandbox.git
-cd vibe-sandbox
+git clone https://github.com/navegar-sistemas/sandbox-vibe.git
+cd sandbox-vibe
 ```
 
 Or use the repository as a [GitHub template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
